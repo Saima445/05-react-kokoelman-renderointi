@@ -19,6 +19,15 @@ const notes = [
   },
 ];
 
+const result = notes.map((note) => note.id);
+console.log(result);
+
+// täydellinen kirjoitus funktiolle:
+// const result2 = notes.map((note) => {
+//   return note.id;
+// });
+// console.log(result2);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <App notes={notes} />
 );
