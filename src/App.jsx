@@ -4,6 +4,7 @@ import Note from "./components/Note";
 const App = (props) => {
   const [notes, setNotes] = useState(props.notes);
   const [newNote, setNewNote] = useState("a new note...");
+  const [showAll, setShowAll] = useState(true);
 
   const addNote = (event) => {
     event.preventDefault();
@@ -22,6 +23,12 @@ const App = (props) => {
     console.log(event.target.value);
     setNewNote(event.target.value);
   };
+
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
+  // : notes.filter((note) => note.important === true);
+  // Pidempi vertailuoperaatio on oikeastaan turha. Koska note.important on arvoltaan joko true tai false.
+  // const tulos = ehto ? val1 : val2. muuttujan tulos arvoksi asetetaan
+  // val1:n arvo jos ehto on tosi. Jos ehto ei ole tosi, muuttujan tulos arvoksi tulee val2:n arvo.
 
   return (
     <>
@@ -53,6 +60,20 @@ const App = (props) => {
       <h1>Notes (omalla komponentilla)</h1>
       <ul>
         {notes.map((note) => (
+          <Note key={note.id} note={note} />
+        ))}
+      </ul>
+      <hr></hr>
+      <hr></hr>
+      {/* tapa 5 tallettaa muuttujaan notesToShow ehdoilla */}
+      <h1>Notes (muuttujalla notesToShow/important:all)</h1>
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? "important" : "all"}
+        </button>
+      </div>
+      <ul>
+        {notesToShow.map((note) => (
           <Note key={note.id} note={note} />
         ))}
       </ul>
