@@ -1,10 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Note from "./components/Note";
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes);
+const App = () => {
+  const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("a new note...");
   const [showAll, setShowAll] = useState(true);
+
+  const hook = () => {
+    console.log("effect");
+    axios.get("http://localhost:3001/notes").then((response) => {
+      console.log("promise fulfilled");
+      setNotes(response.data);
+    });
+  };
+  useEffect(hook, []);
+  //toinen tapa EVENTHANDLERIN KANSSA
+  // useEffect(() => {
+  //   console.log('effect')
+
+  //   const eventHandler = response => {
+  //     console.log('promise fulfilled')
+  //     setNotes(response.data)
+  //   }
+
+  //   const promise = axios.get('http://localhost:3001/notes')
+  //   promise.then(eventHandler)
+  // }, [])
+
+  // useEffect(() => {
+  //   console.log(effect);
+  //   axios.get("http://localhost:3001/notes").then((response) => {
+  //     console.log("promise fulfilled");
+  //     setNotes(response.data);
+  //   });
+  // }, []);
+  // console.log("render", notes.length, "notes");
 
   const addNote = (event) => {
     event.preventDefault();
@@ -35,33 +66,30 @@ const App = (props) => {
       {/* tapa 1 kovakoodilla */}
       <h1>Notes (kovakoodi)</h1>
       <ul>
-        <li>{notes[0].content}</li>
-        <li>{notes[1].content}</li>
-        <li>{notes[2].content}</li>
+        {notes.length > 0 && <li>{notes[0].content}</li>}
+        {notes.length > 1 && <li>{notes[1].content}</li>}
+        {notes.length > 2 && <li>{notes[2].content}</li>}
       </ul>
       <hr></hr>
       {/* tapa 2 käyttäen map-metodia */}
       <h1>Notes (map)</h1>
       <ul>
-        {notes.map((note) => (
-          <li key={note.id}>{note.content}</li>
-        ))}
+        {notes.length > 0 &&
+          notes.map((note) => <li key={note.id}>{note.content}</li>)}
       </ul>
       <hr></hr>
       {/* tapa 3 antipattern, ei ole suositeltava tapa! */}
       <h1>Notes (taulukon indeksit avaimina)</h1>
       <ul>
-        {notes.map((note, i) => (
-          <li key={i}>{note.content}</li>
-        ))}
+        {notes.length > 0 &&
+          notes.map((note, i) => <li key={i}>{note.content}</li>)}
       </ul>
       <hr></hr>
       {/* tapa 4 tehdään Notelle oma komponentti */}
       <h1>Notes (omalla komponentilla)</h1>
       <ul>
-        {notes.map((note) => (
-          <Note key={note.id} note={note} />
-        ))}
+        {notes.length > 0 &&
+          notes.map((note) => <Note key={note.id} note={note} />)}
       </ul>
       <hr></hr>
       <hr></hr>
@@ -73,9 +101,8 @@ const App = (props) => {
         </button>
       </div>
       <ul>
-        {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
-        ))}
+        {notes.length > 0 &&
+          notesToShow.map((note) => <Note key={note.id} note={note} />)}
       </ul>
       <form onSubmit={addNote}>
         <input value={newNote} onChange={handleNoteChange} />
